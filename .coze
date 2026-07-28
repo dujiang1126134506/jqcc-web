@@ -1,0 +1,12 @@
+[project]
+name = "score-api"
+description = "积分查询系统后端 API 服务（Spring Boot）"
+requires = ["jdk-17", "maven"]
+
+[dev]
+build = ["mvn", "clean", "compile", "-DskipTests", "-q"]
+run = ["sh", "-c", "mvn spring-boot:run -Dspring-boot.run.jvmArguments=\"-Dserver.port=${DEPLOY_RUN_PORT:-5000}\" -q"]
+
+[deploy]
+build = ["mvn", "clean", "package", "-DskipTests", "-q"]
+run = ["sh", "-c", "java -jar target/score-api.jar --server.port=${DEPLOY_RUN_PORT:-5000}"]

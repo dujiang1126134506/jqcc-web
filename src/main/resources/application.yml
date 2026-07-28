@@ -1,0 +1,49 @@
+server:
+  port: ${DEPLOY_RUN_PORT:5000}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: score-api
+
+  # 数据源配置 - 默认 H2 内存数据库，生产环境切换为 MySQL
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:scoredb;DB_CLOSE_DELAY=-1;MODE=MySQL}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: ${SPRING_DRIVER:org.h2.Driver}
+
+  # JPA 配置
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: ${SPRING_JPA_DIALECT:org.hibernate.dialect.H2Dialect}
+
+  # 文件上传
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+  # JSON 配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+# OpenAPI / Swagger 文档
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+# 日志
+logging:
+  level:
+    com.score: debug
+    org.hibernate.SQL: debug
