@@ -1,5 +1,5 @@
 server:
-  port: ${DEPLOY_RUN_PORT:5000}
+  port: ${DEPLOY_RUN_PORT:8800}
   servlet:
     context-path: /
 
@@ -7,12 +7,13 @@ spring:
   application:
     name: score-api
 
-  # 数据源配置 - 默认 H2 内存数据库，生产环境切换为 MySQL
+  # 数据源配置 - MySQL
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:scoredb;DB_CLOSE_DELAY=-1;MODE=MySQL}
-    username: ${SPRING_DATASOURCE_USERNAME:sa}
-    password: ${SPRING_DATASOURCE_PASSWORD:}
-    driver-class-name: ${SPRING_DRIVER:org.h2.Driver}
+    url: jdbc:mysql://124.221.197.217:3306/jqcc2?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: jqcc2
+    password: 040408
+#    password: 313ab0358dd5f293
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   # JPA 配置
   jpa:
@@ -22,7 +23,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: ${SPRING_JPA_DIALECT:org.hibernate.dialect.H2Dialect}
+        dialect: ${SPRING_JPA_DIALECT:org.hibernate.dialect.MySQLDialect}
 
   # 文件上传
   servlet:
@@ -34,6 +35,12 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
+# 图片上传配置
+app:
+  upload:
+    path: ${UPLOAD_PATH:D:/jqcc-uploads}
+    url-prefix: /uploads
 
 # OpenAPI / Swagger 文档
 springdoc:

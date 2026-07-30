@@ -94,7 +94,11 @@ java -jar target/score-api.jar
 ### 5. 基础数据管理
 - 赛季管理（CRUD）
 - 战队管理（CRUD）
-- 选手管理（CRUD）
+
+### 6. 选手数据（小程序管理页面，扁平结构）
+- `/api/players` 系列接口供小程序端"赛事积分管理"页面使用
+- 请求/响应为扁平结构：选手名/战队名/赛季名直接以字符串传递，一条记录对应一场比赛的得分
+- 新增/编辑/导入时按名称自动查找或创建赛季、战队、选手（不存在则创建），底层仍写入 `t_season`/`t_team`/`t_player`/`t_player_score`
 
 ## 接口示例
 
@@ -133,4 +137,23 @@ curl -X POST http://localhost:5000/api/import/excel \
   -F "file=@scores.xlsx" \
   -F "seasonId=1" \
   -F "skipDuplicate=true"
+```
+
+### 新增选手数据（扁平结构，小程序端用）
+```bash
+curl -X POST http://localhost:5000/api/players \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "playerName": "选手A",
+    "teamName": "战队1",
+    "season": "S1赛季",
+    "stage": "常规赛",
+    "round": 1,
+    "date": "2024-01-01",
+    "voteScore": 5,
+    "winScore": 3,
+    "skillScore": 2,
+    "penaltyScore": 0,
+    "extraScore": 0
+  }'
 ```

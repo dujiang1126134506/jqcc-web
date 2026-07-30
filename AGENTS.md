@@ -129,7 +129,20 @@ SPRING_JPA_DIALECT=org.hibernate.dialect.MySQLDialect
 |------|------|------|
 | CRUD | `/api/seasons` | 赛季管理 |
 | CRUD | `/api/teams` | 战队管理 |
-| CRUD | `/api/players` | 选手管理 |
+
+### 选手数据（`/api/players/**`，扁平结构，供小程序端"赛事积分管理"页面使用）
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | `/api/players` | 查询选手数据列表，支持 `season`/`stage`/`keyword` 筛选 |
+| GET | `/api/players/{id}` | 查询单条选手数据 |
+| POST | `/api/players` | 新增选手数据 |
+| PUT | `/api/players/{id}` | 修改选手数据 |
+| DELETE | `/api/players/{id}` | 删除选手数据 |
+| POST | `/api/players/import` | 批量导入（JSON） |
+
+请求/响应字段为扁平结构（`playerName`/`teamName`/`season`/`stage` 等均为名称字符串，一条记录对应一场比赛的得分），
+底层仍按 `Season`/`Team`/`Player`/`PlayerScore` 分表存储：`PlayerRecordServiceImpl` 通过 `DataResolveService` 按名称
+自动查找或创建赛季/战队/选手，再读写 `PlayerScore`。与 `/api/player-scores`（按 ID 操作、供后台管理更细粒度使用）是两套面向不同调用方的接口，共享同一份底层数据。
 
 ## 核心业务规则
 
@@ -180,7 +193,7 @@ SPRING_JPA_DIALECT=org.hibernate.dialect.MySQLDialect
 
 | 需求 | 修改位置 |
 |------|----------|
-| 新增字段 | `entity/PlayerScore.java` + `dto/PlayerScoreDTO.java` + `dto/PlayerScoreVO.java` |
+| 新增字段 | `entity/PlayerScore.java` + `dto/PlayerScoreDTO.java` + `dto/PlayerScoreVO.java`（`/api/player-scores`）或 `dto/PlayerRecordDTO.java` + `dto/PlayerRecordVO.java`（`/api/players`） |
 | 修改得分公式 | `entity/PlayerScore.java#calculateTotalScore()` |
 | 新增排行榜 | `service/RankingService.java` + `repository/PlayerScoreRepository.java` + `controller/AppController.java` |
 | 修改导入列 | `service/impl/ImportServiceImpl.java#parseExcelRow/parseCsvRow` |
