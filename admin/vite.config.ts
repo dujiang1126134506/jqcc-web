@@ -15,15 +15,15 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:8800',
         changeOrigin: true,
       },
       '/api-docs': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:8800',
         changeOrigin: true,
       },
       '/swagger-ui.html': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:8800',
         changeOrigin: true,
       },
     },
