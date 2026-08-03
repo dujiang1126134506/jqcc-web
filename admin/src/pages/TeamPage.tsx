@@ -22,6 +22,7 @@ import {
 import type { ColumnsType } from 'antd/es/table'
 import { getTeams, createTeam, updateTeam, deleteTeam, uploadImage, getSeasons, getDefaultSeason } from '@/api'
 import type { Team, Season } from '@/types'
+import getImageUrl from '@/utils/imageUrl'
 
 const TeamPage: React.FC = () => {
   const [list, setList] = useState<Team[]>([])
@@ -31,6 +32,7 @@ const TeamPage: React.FC = () => {
   const [editing, setEditing] = useState<Team | null>(null)
   const [filterSeasonId, setFilterSeasonId] = useState<number | null>(null)
   const [form] = Form.useForm()
+  const [logoPreview, setLogoPreview] = useState<string>('')
 
   const fetchSeasons = async () => {
     try {
@@ -74,26 +76,6 @@ const TeamPage: React.FC = () => {
     fetchList()
   }, [filterSeasonId])
 
-  const openCreate = () => {
-    setEditing(null)
-    form.resetFields()
-    if (filterSeasonId) {
-      form.setFieldsValue({ seasonId: filterSeasonId })
-    }
-    setModalOpen(true)
-  }
-
-  const openEdit = (row: Team) => {
-    setEditing(row)
-    form.setFieldsValue({
-      seasonId: row.seasonId,
-      name: row.name,
-      logo: row.logo,
-      description: row.description,
-    })
-    setModalOpen(true)
-  }
-
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields()
@@ -131,11 +113,34 @@ const TeamPage: React.FC = () => {
     try {
       const res = await uploadImage(file)
       form.setFieldsValue({ logo: res.url })
+      setLogoPreview(getImageUrl(res.url))
       message.success('上传成功')
     } catch {
       // ignore
     }
     return false // 阻止自动上传
+  }
+
+  const openCreate = () => {
+    setEditing(null)
+    setLogoPreview('')
+    form.resetFields()
+    if (filterSeasonId) {
+      form.setFieldsValue({ seasonId: filterSeasonId })
+    }
+    setModalOpen(true)
+  }
+
+  const openEdit = (record: Team) => {
+    setEditing(record)
+    setLogoPreview(getImageUrl(record.logo))
+    form.setFieldsValue({
+      seasonId: record.seasonId,
+      name: record.name,
+      logo: record.logo,
+      description: record.description,
+    })
+    setModalOpen(true)
   }
 
   const getSeasonName = (seasonId: number | undefined) => {
@@ -149,7 +154,7 @@ const TeamPage: React.FC = () => {
       width: 80,
       render: (logo: string | undefined) =>
         logo ? (
-          <Avatar size={40} src={logo} />
+          <Avatar size={40} src={getImageUrl(logo)} />
         ) : (
           <Avatar size={40} icon={<TeamOutlined />} />
         ),
@@ -234,10 +239,19 @@ const TeamPage: React.FC = () => {
             <Input placeholder="请输入战队名称" />
           </Form.Item>
           <Form.Item label="战队 Logo" name="logo">
-            <Input placeholder="Logo URL" style={{ marginBottom: 8 }} />
-            <Upload beforeUpload={handleLogoUpload} showUploadList={false} accept="image/*">
-              <Button icon={<UploadOutlined />}>上传图片</Button>
-            </Upload>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              {logoPreview ? (
+                <Avatar size={64} src={logoPreview} shape="square" />
+              ) : (
+                <Avatar size={64} icon={<TeamOutlined />} shape="square" />
+              )}
+              <div>
+                <Input placeholder="Logo URL" style={{ width: 260, marginBottom: 8 }} />
+                <Upload beforeUpload={handleLogoUpload} showUploadList={false} accept="image/*">
+                  <Button icon={<UploadOutlined />}>上传图片</Button>
+                </Upload>
+              </div>
+            </div>
           </Form.Item>
           <Form.Item label="简介" name="description">
             <Input.TextArea rows={2} />

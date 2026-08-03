@@ -3,6 +3,7 @@ import { Table, Button, Modal, Form, Input, Select, Image, Space, Popconfirm, me
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import type { Team, Season } from '@/types'
 import { getTeams, getSeasons } from '@/api'
+import getImageUrl from '@/utils/imageUrl'
 
 interface PlayerInfo {
   id: number
@@ -166,7 +167,7 @@ const PlayerInfoPage: React.FC = () => {
           <Image
             width={36}
             height={36}
-            src={avatar}
+            src={getImageUrl(avatar)}
             style={{ borderRadius: '50%', objectFit: 'cover' }}
           />
         ) : (
