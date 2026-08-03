@@ -34,6 +34,10 @@ public class Result<T> {
         return new Result<>(500, message, null);
     }
 
+    public static <T> Result<T> error(String message) {
+        return fail(message);
+    }
+
     public static <T> Result<T> fail(int code, String message) {
         return new Result<>(code, message, null);
     }

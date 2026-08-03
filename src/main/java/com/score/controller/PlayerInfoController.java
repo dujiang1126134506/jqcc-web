@@ -33,20 +33,15 @@ public class PlayerInfoController {
             @Parameter(description = "战队ID") @RequestParam(required = false) Long teamId,
             @Parameter(description = "关键字（选手名）") @RequestParam(required = false) String keyword) {
         List<Player> list;
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         if (teamId != null && keyword != null && !keyword.isBlank()) {
-            list = playerRepository.findAll().stream()
-                    .filter(p -> p.getTeamId().equals(teamId) && p.getName().contains(keyword))
-                    .toList();
+            list = playerRepository.findByTeamIdAndNameContaining(teamId, keyword, sort);
         } else if (teamId != null) {
-            list = playerRepository.findAll().stream()
-                    .filter(p -> p.getTeamId().equals(teamId))
-                    .toList();
+            list = playerRepository.findByTeamId(teamId, sort);
         } else if (keyword != null && !keyword.isBlank()) {
-            list = playerRepository.findAll().stream()
-                    .filter(p -> p.getName().contains(keyword))
-                    .toList();
+            list = playerRepository.findByNameContaining(keyword, sort);
         } else {
-            list = playerRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            list = playerRepository.findAll(sort);
         }
         return Result.ok(list);
     }
@@ -61,12 +56,11 @@ public class PlayerInfoController {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         Page<Player> result;
         if (teamId != null && keyword != null && !keyword.isBlank()) {
-            result = playerRepository.findAll(pageable).filter(
-                    p -> p.getTeamId().equals(teamId) && p.getName().contains(keyword));
+            result = playerRepository.findByTeamIdAndNameContaining(teamId, keyword, pageable);
         } else if (teamId != null) {
-            result = playerRepository.findAll(pageable).filter(p -> p.getTeamId().equals(teamId));
+            result = playerRepository.findByTeamId(teamId, pageable);
         } else if (keyword != null && !keyword.isBlank()) {
-            result = playerRepository.findAll(pageable).filter(p -> p.getName().contains(keyword));
+            result = playerRepository.findByNameContaining(keyword, pageable);
         } else {
             result = playerRepository.findAll(pageable);
         }
