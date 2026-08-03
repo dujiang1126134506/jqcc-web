@@ -1,5 +1,5 @@
 server:
-  port: ${DEPLOY_RUN_PORT:8800}
+  port: 8800
   servlet:
     context-path: /
 
