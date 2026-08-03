@@ -6,6 +6,7 @@ import {
   TrophyOutlined,
   UserOutlined,
   FileTextOutlined,
+  TableOutlined,
   UploadOutlined,
 } from '@ant-design/icons'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
@@ -16,8 +17,9 @@ const menuItems = [
   { key: '/dashboard', icon: <DashboardOutlined />, label: '数据概览' },
   { key: '/seasons', icon: <TrophyOutlined />, label: '赛季管理' },
   { key: '/teams', icon: <TeamOutlined />, label: '战队管理' },
-  { key: '/players', icon: <UserOutlined />, label: '选手数据' },
-  { key: '/scores', icon: <FileTextOutlined />, label: '得分记录' },
+  { key: '/players', icon: <UserOutlined />, label: '选手管理' },
+  { key: '/player-scores', icon: <FileTextOutlined />, label: '选手得分' },
+  { key: '/score-records', icon: <TableOutlined />, label: '得分记录' },
   { key: '/import', icon: <UploadOutlined />, label: '数据导入' },
 ]
 

@@ -7,6 +7,7 @@ import AdminLayout from './layouts/AdminLayout'
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const SeasonPage = lazy(() => import('./pages/SeasonPage'))
 const TeamPage = lazy(() => import('./pages/TeamPage'))
+const PlayerInfoPage = lazy(() => import('./pages/PlayerInfoPage'))
 const PlayerPage = lazy(() => import('./pages/PlayerPage'))
 const ScorePage = lazy(() => import('./pages/ScorePage'))
 const ImportPage = lazy(() => import('./pages/ImportPage'))
@@ -28,8 +29,9 @@ const App: React.FC = () => {
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="seasons" element={<SeasonPage />} />
               <Route path="teams" element={<TeamPage />} />
-              <Route path="players" element={<PlayerPage />} />
-              <Route path="scores" element={<ScorePage />} />
+              <Route path="players" element={<PlayerInfoPage />} />
+              <Route path="player-scores" element={<PlayerPage />} />
+              <Route path="score-records" element={<ScorePage />} />
               <Route path="import" element={<ImportPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
