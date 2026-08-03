@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 战队管理接口
  */
-@Tag(name = "战队管理", description = "战队的增删改查")
+@Tag(name = "战队管理", description = "战队的增删改查，按赛季区分")
 @RestController
 @RequestMapping("/api/teams")
 @RequiredArgsConstructor
@@ -27,6 +27,12 @@ public class TeamController {
         return Result.ok(teamRepository.findAll());
     }
 
+    @Operation(summary = "按赛季查询战队")
+    @GetMapping("/season/{seasonId}")
+    public Result<List<Team>> listBySeason(@PathVariable Long seasonId) {
+        return Result.ok(teamRepository.findBySeasonId(seasonId));
+    }
+
     @Operation(summary = "根据ID查询战队")
     @GetMapping("/{id}")
     public Result<Team> getById(@PathVariable Long id) {
@@ -36,7 +42,14 @@ public class TeamController {
     @Operation(summary = "新增战队")
     @PostMapping
     public Result<Team> create(@RequestBody Team team) {
+        if (team.getSeasonId() == null) {
+            return Result.error("赛季ID不能为空");
+        }
         team.setId(null);
+        // 同一赛季下战队名不能重复
+        if (teamRepository.findBySeasonIdAndName(team.getSeasonId(), team.getName()).isPresent()) {
+            return Result.error("该赛季下已存在同名战队");
+        }
         return Result.ok(teamRepository.save(team));
     }
 

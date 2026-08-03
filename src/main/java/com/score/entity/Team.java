@@ -20,6 +20,10 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** 所属赛季ID */
+    @Column(name = "season_id", nullable = false)
+    private Long seasonId;
+
     /** 战队名称 */
     @Column(nullable = false, length = 64)
     private String name;

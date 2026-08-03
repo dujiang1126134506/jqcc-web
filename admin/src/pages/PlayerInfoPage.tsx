@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Table, Button, Modal, Form, Input, Select, Image, Space, Popconfirm, message } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons'
-import type { Team } from '@/types'
-import { getTeams } from '@/api'
+import type { Team, Season } from '@/types'
+import { getTeams, getSeasons } from '@/api'
 
 interface PlayerInfo {
   id: number
@@ -17,17 +17,37 @@ interface PlayerInfo {
 const PlayerInfoPage: React.FC = () => {
   const [data, setData] = useState<PlayerInfo[]>([])
   const [teams, setTeams] = useState<Team[]>([])
+  const [seasons, setSeasons] = useState<Season[]>([])
   const [loading, setLoading] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<PlayerInfo | null>(null)
   const [form] = Form.useForm()
   const [teamFilter, setTeamFilter] = useState<number | undefined>()
+  const [seasonFilter, setSeasonFilter] = useState<number | undefined>()
+  const [formSeasonId, setFormSeasonId] = useState<number | undefined>()
+
+  // 根据赛季过滤后的战队列表
+  const filteredTeams = seasonFilter
+    ? teams.filter((t) => t.seasonId === seasonFilter)
+    : teams
+  const formTeams = formSeasonId
+    ? teams.filter((t) => t.seasonId === formSeasonId)
+    : teams
+
+  const fetchSeasons = async () => {
+    try {
+      const list = await getSeasons()
+      setSeasons(list || [])
+    } catch {
+      // ignore
+    }
+  }
 
   const fetchTeams = async () => {
     try {
       const list = await getTeams()
       setTeams(list || [])
-    } catch (e) {
+    } catch {
       // ignore
     }
   }
@@ -42,7 +62,7 @@ const PlayerInfoPage: React.FC = () => {
       if (json.code === 200) {
         setData(json.data || [])
       }
-    } catch (e) {
+    } catch {
       message.error('获取选手列表失败')
     } finally {
       setLoading(false)
@@ -50,6 +70,7 @@ const PlayerInfoPage: React.FC = () => {
   }
 
   useEffect(() => {
+    fetchSeasons()
     fetchTeams()
   }, [])
 
@@ -57,19 +78,28 @@ const PlayerInfoPage: React.FC = () => {
     fetchData()
   }, [teamFilter])
 
+  // 赛季筛选变化时清空战队筛选
+  useEffect(() => {
+    setTeamFilter(undefined)
+  }, [seasonFilter])
+
   const handleAdd = () => {
     setEditing(null)
     form.resetFields()
+    setFormSeasonId(undefined)
     setModalOpen(true)
   }
 
   const handleEdit = (record: PlayerInfo) => {
     setEditing(record)
+    const team = teams.find((t) => t.id === record.teamId)
+    setFormSeasonId(team?.seasonId)
     form.setFieldsValue({
       name: record.name,
       avatar: record.avatar,
       teamId: record.teamId,
       position: record.position,
+      seasonId: team?.seasonId,
     })
     setModalOpen(true)
   }
@@ -84,7 +114,7 @@ const PlayerInfoPage: React.FC = () => {
       } else {
         message.error(json.message || '删除失败')
       }
-    } catch (e) {
+    } catch {
       message.error('删除失败')
     }
   }
@@ -107,13 +137,18 @@ const PlayerInfoPage: React.FC = () => {
       } else {
         message.error(json.message || '操作失败')
       }
-    } catch (e) {
+    } catch {
       message.error('操作失败')
     }
   }
 
   const getTeamName = (teamId: number) => {
-    return teams.find(t => t.id === teamId)?.name || '-'
+    return teams.find((t) => t.id === teamId)?.name || '-'
+  }
+
+  const getSeasonName = (teamId: number) => {
+    const team = teams.find((t) => t.id === teamId)
+    return seasons.find((s) => s.id === team?.seasonId)?.name || '-'
   }
 
   const columns = [
@@ -156,6 +191,12 @@ const PlayerInfoPage: React.FC = () => {
       title: '选手姓名',
       dataIndex: 'name',
       width: 140,
+    },
+    {
+      title: '所属赛季',
+      dataIndex: 'teamId',
+      width: 140,
+      render: (teamId: number) => getSeasonName(teamId),
     },
     {
       title: '所属战队',
@@ -209,6 +250,15 @@ const PlayerInfoPage: React.FC = () => {
     <div>
       <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <span style={{ color: '#666' }}>赛季筛选：</span>
+          <Select
+            style={{ width: 180 }}
+            placeholder="全部赛季"
+            allowClear
+            value={seasonFilter}
+            onChange={(v) => setSeasonFilter(v)}
+            options={seasons.map((s) => ({ label: s.name, value: s.id }))}
+          />
           <span style={{ color: '#666' }}>战队筛选：</span>
           <Select
             style={{ width: 180 }}
@@ -216,7 +266,7 @@ const PlayerInfoPage: React.FC = () => {
             allowClear
             value={teamFilter}
             onChange={setTeamFilter}
-            options={teams.map(t => ({ label: t.name, value: t.id }))}
+            options={filteredTeams.map((t) => ({ label: t.name, value: t.id }))}
           />
         </div>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
@@ -230,7 +280,7 @@ const PlayerInfoPage: React.FC = () => {
         dataSource={data}
         loading={loading}
         pagination={{ pageSize: 10, showSizeChanger: true }}
-        scroll={{ x: 900 }}
+        scroll={{ x: 1000 }}
       />
 
       <Modal
@@ -241,8 +291,23 @@ const PlayerInfoPage: React.FC = () => {
         okText="确定"
         cancelText="取消"
         width={500}
+        destroyOnHidden
       >
         <Form form={form} layout="vertical">
+          <Form.Item
+            label="赛季"
+            name="seasonId"
+            rules={[{ required: true, message: '请选择赛季' }]}
+          >
+            <Select
+              placeholder="请选择赛季"
+              onChange={(v) => {
+                setFormSeasonId(v)
+                form.setFieldsValue({ teamId: undefined })
+              }}
+              options={seasons.map((s) => ({ label: s.name, value: s.id }))}
+            />
+          </Form.Item>
           <Form.Item
             name="name"
             label="选手姓名"
@@ -259,8 +324,9 @@ const PlayerInfoPage: React.FC = () => {
             rules={[{ required: true, message: '请选择所属战队' }]}
           >
             <Select
-              placeholder="请选择战队"
-              options={teams.map(t => ({ label: t.name, value: t.id }))}
+              placeholder="请先选择赛季"
+              disabled={!formSeasonId}
+              options={formTeams.map((t) => ({ label: t.name, value: t.id }))}
             />
           </Form.Item>
           <Form.Item name="position" label="位置/身份">

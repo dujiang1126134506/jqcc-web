@@ -33,24 +33,33 @@ public class DataResolveService {
     private final Map<String, Long> playerCache = new ConcurrentHashMap<>();
     private final Map<String, Long> seasonCache = new ConcurrentHashMap<>();
 
+    /**
+     * 解析战队ID（按赛季+名称查找，找不到则创建）
+     * @param seasonId 赛季ID
+     * @param teamName 战队名称
+     */
     @Transactional(rollbackFor = Exception.class)
-    public Long resolveTeamId(String teamName) {
+    public Long resolveTeamId(Long seasonId, String teamName) {
+        if (seasonId == null) {
+            throw new IllegalArgumentException("赛季ID不能为空");
+        }
         if (teamName == null || teamName.trim().isEmpty()) {
             throw new IllegalArgumentException("战队名称不能为空");
         }
-        String key = teamName.trim();
+        String key = seasonId + ":" + teamName.trim();
         if (teamCache.containsKey(key)) {
             return teamCache.get(key);
         }
-        // 从数据库查
-        Team team = teamRepository.findByName(key).orElse(null);
+        // 从数据库查（按赛季+名称）
+        Team team = teamRepository.findBySeasonIdAndName(seasonId, teamName.trim()).orElse(null);
 
         if (team == null) {
             // 自动创建战队
             team = new Team();
-            team.setName(key);
+            team.setSeasonId(seasonId);
+            team.setName(teamName.trim());
             team = teamRepository.save(team);
-            log.info("导入时自动创建战队: {}", key);
+            log.info("导入时自动创建战队: {} (赛季ID={})", teamName, seasonId);
         }
         teamCache.put(key, team.getId());
         return team.getId();
@@ -82,8 +91,8 @@ public class DataResolveService {
      * 解析战队ID，并在提供 logo 且战队当前无 logo 时补充
      */
     @Transactional(rollbackFor = Exception.class)
-    public Long resolveTeamId(String teamName, String teamLogo) {
-        Long teamId = resolveTeamId(teamName);
+    public Long resolveTeamId(Long seasonId, String teamName, String teamLogo) {
+        Long teamId = resolveTeamId(seasonId, teamName);
         if (teamLogo != null && !teamLogo.isBlank()) {
             teamRepository.findById(teamId).ifPresent(team -> {
                 if (team.getLogo() == null || team.getLogo().isBlank()) {

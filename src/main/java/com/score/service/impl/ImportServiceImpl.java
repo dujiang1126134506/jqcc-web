@@ -208,7 +208,7 @@ public class ImportServiceImpl implements ImportService {
         dto.setSeasonId(seasonId);
 
         // 战队 & 选手：通过名称解析ID（若不存在可按需创建）
-        Long teamId = dataResolveService.resolveTeamId(teamName);
+        Long teamId = dataResolveService.resolveTeamId(seasonId, teamName);
         Long playerId = dataResolveService.resolvePlayerId(playerName, teamId);
         dto.setTeamId(teamId);
         dto.setPlayerId(playerId);

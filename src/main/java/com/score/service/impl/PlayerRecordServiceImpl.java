@@ -141,7 +141,7 @@ public class PlayerRecordServiceImpl implements PlayerRecordService {
 
     private void applyDto(PlayerScore entity, PlayerRecordDTO dto) {
         Long seasonId = dataResolveService.resolveSeasonId(dto.getSeason());
-        Long teamId = dataResolveService.resolveTeamId(dto.getTeamName(), dto.getTeamLogo());
+        Long teamId = dataResolveService.resolveTeamId(seasonId, dto.getTeamName(), dto.getTeamLogo());
         Long playerId = dataResolveService.resolvePlayerId(dto.getPlayerName(), teamId, dto.getPlayerAvatar());
         StageEnum stage = StageEnum.of(dto.getStage());
         if (stage == null) {

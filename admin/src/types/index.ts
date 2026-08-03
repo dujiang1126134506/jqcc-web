@@ -27,6 +27,7 @@ export interface Season {
 // 战队
 export interface Team {
   id: number
+  seasonId: number
   name: string
   logo?: string
   description?: string

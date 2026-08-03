@@ -9,6 +9,8 @@ import {
   message,
   Popconfirm,
   Avatar,
+  Select,
+  Space,
 } from 'antd'
 import {
   PlusOutlined,
@@ -18,21 +20,36 @@ import {
   TeamOutlined,
 } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
-import { getTeams, createTeam, updateTeam, deleteTeam, uploadImage } from '@/api'
-import type { Team } from '@/types'
+import { getTeams, createTeam, updateTeam, deleteTeam, uploadImage, getSeasons } from '@/api'
+import type { Team, Season } from '@/types'
 
 const TeamPage: React.FC = () => {
   const [list, setList] = useState<Team[]>([])
+  const [seasons, setSeasons] = useState<Season[]>([])
   const [loading, setLoading] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<Team | null>(null)
+  const [filterSeasonId, setFilterSeasonId] = useState<number | null>(null)
   const [form] = Form.useForm()
+
+  const fetchSeasons = async () => {
+    try {
+      const data = await getSeasons()
+      setSeasons(Array.isArray(data) ? data : [])
+    } catch {
+      // ignore
+    }
+  }
 
   const fetchList = async () => {
     setLoading(true)
     try {
       const data = await getTeams()
-      setList(Array.isArray(data) ? data : [])
+      let teams = Array.isArray(data) ? data : []
+      if (filterSeasonId) {
+        teams = teams.filter((t) => t.seasonId === filterSeasonId)
+      }
+      setList(teams)
     } catch {
       // ignore
     } finally {
@@ -41,18 +58,26 @@ const TeamPage: React.FC = () => {
   }
 
   useEffect(() => {
-    fetchList()
+    fetchSeasons()
   }, [])
+
+  useEffect(() => {
+    fetchList()
+  }, [filterSeasonId])
 
   const openCreate = () => {
     setEditing(null)
     form.resetFields()
+    if (filterSeasonId) {
+      form.setFieldsValue({ seasonId: filterSeasonId })
+    }
     setModalOpen(true)
   }
 
   const openEdit = (row: Team) => {
     setEditing(row)
     form.setFieldsValue({
+      seasonId: row.seasonId,
       name: row.name,
       logo: row.logo,
       description: row.description,
@@ -64,6 +89,7 @@ const TeamPage: React.FC = () => {
     try {
       const values = await form.validateFields()
       const payload: Partial<Team> = {
+        seasonId: values.seasonId,
         name: values.name,
         logo: values.logo,
         description: values.description,
@@ -103,6 +129,10 @@ const TeamPage: React.FC = () => {
     return false // 阻止自动上传
   }
 
+  const getSeasonName = (seasonId: number | undefined) => {
+    return seasons.find((s) => s.id === seasonId)?.name || '-'
+  }
+
   const columns: ColumnsType<Team> = [
     {
       title: 'Logo',
@@ -116,6 +146,7 @@ const TeamPage: React.FC = () => {
         ),
     },
     { title: 'ID', dataIndex: 'id', width: 80 },
+    { title: '所属赛季', dataIndex: 'seasonId', width: 140, render: (v) => getSeasonName(v) },
     { title: '战队名称', dataIndex: 'name', width: 200 },
     { title: '简介', dataIndex: 'description' },
     {
@@ -139,7 +170,25 @@ const TeamPage: React.FC = () => {
 
   return (
     <div>
-      <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
+      <div
+        style={{
+          marginBottom: 16,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Space>
+          <span style={{ color: '#666' }}>赛季筛选：</span>
+          <Select
+            style={{ width: 200 }}
+            allowClear
+            placeholder="选择赛季"
+            value={filterSeasonId ?? undefined}
+            onChange={(v) => setFilterSeasonId(v ?? null)}
+            options={seasons.map((s) => ({ value: s.id, label: s.name }))}
+          />
+        </Space>
         <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
           新增战队
         </Button>
@@ -158,9 +207,16 @@ const TeamPage: React.FC = () => {
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         onOk={handleSubmit}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form form={form} layout="vertical" style={{ marginTop: 8 }}>
+          <Form.Item
+            label="所属赛季"
+            name="seasonId"
+            rules={[{ required: true, message: '请选择赛季' }]}
+          >
+            <Select placeholder="请选择赛季" options={seasons.map((s) => ({ value: s.id, label: s.name }))} />
+          </Form.Item>
           <Form.Item
             label="战队名称"
             name="name"
