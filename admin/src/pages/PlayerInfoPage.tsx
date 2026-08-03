@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Modal, Form, Input, Select, Image, Space, Popconfirm, message } from 'antd'
+import { Table, Button, Modal, Form, Input, Select, Image, Space, Popconfirm, message, Upload } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import type { Team, Season } from '@/types'
 import { getTeams, getSeasons } from '@/api'
@@ -26,6 +26,8 @@ const PlayerInfoPage: React.FC = () => {
   const [teamFilter, setTeamFilter] = useState<number | undefined>()
   const [seasonFilter, setSeasonFilter] = useState<number | undefined>()
   const [formSeasonId, setFormSeasonId] = useState<number | undefined>()
+
+  const [formAvatarUrl, setFormAvatarUrl] = useState<string | undefined>(undefined)
 
   // 根据赛季过滤后的战队列表
   const filteredTeams = seasonFilter
@@ -88,6 +90,7 @@ const PlayerInfoPage: React.FC = () => {
     setEditing(null)
     form.resetFields()
     setFormSeasonId(undefined)
+    setFormAvatarUrl(undefined)
     setModalOpen(true)
   }
 
@@ -95,6 +98,7 @@ const PlayerInfoPage: React.FC = () => {
     setEditing(record)
     const team = teams.find((t) => t.id === record.teamId)
     setFormSeasonId(team?.seasonId)
+    setFormAvatarUrl(record.avatar)
     form.setFieldsValue({
       name: record.name,
       avatar: record.avatar,
@@ -310,16 +314,6 @@ const PlayerInfoPage: React.FC = () => {
             />
           </Form.Item>
           <Form.Item
-            name="name"
-            label="选手姓名"
-            rules={[{ required: true, message: '请输入选手姓名' }]}
-          >
-            <Input placeholder="请输入选手姓名" />
-          </Form.Item>
-          <Form.Item name="avatar" label="头像URL">
-            <Input placeholder="请输入头像图片地址，可留空" prefix={<UploadOutlined />} />
-          </Form.Item>
-          <Form.Item
             name="teamId"
             label="所属战队"
             rules={[{ required: true, message: '请选择所属战队' }]}
@@ -329,6 +323,61 @@ const PlayerInfoPage: React.FC = () => {
               disabled={!formSeasonId}
               options={formTeams.map((t) => ({ label: t.name, value: t.id }))}
             />
+          </Form.Item>
+          <Form.Item
+            name="name"
+            label="选手姓名"
+            rules={[{ required: true, message: '请输入选手姓名' }]}
+          >
+            <Input placeholder="请输入选手姓名" />
+          </Form.Item>
+          <Form.Item label="选手头像">
+            <Upload
+              name="file"
+              action="/api/upload/image"
+              listType="picture-card"
+              maxCount={1}
+              showUploadList={false}
+              accept="image/*"
+              beforeUpload={(file) => {
+                const isImage = file.type.startsWith('image/')
+                if (!isImage) {
+                  message.error('只能上传图片文件!')
+                  return Upload.LIST_IGNORE
+                }
+                const isLt2M = file.size / 1024 / 1024 < 2
+                if (!isLt2M) {
+                  message.error('图片大小不能超过 2MB!')
+                  return Upload.LIST_IGNORE
+                }
+                return true
+              }}
+              onChange={(info) => {
+                if (info.file.status === 'done') {
+                  const url = info.file.response?.data?.url || info.file.response?.url
+                  if (url) {
+                    setFormAvatarUrl(url)
+                    form.setFieldsValue({ avatar: url })
+                    message.success('头像上传成功')
+                  }
+                } else if (info.file.status === 'error') {
+                  message.error('头像上传失败')
+                }
+              }}
+            >
+              {formAvatarUrl ? (
+                <img
+                  src={getImageUrl(formAvatarUrl)}
+                  alt="头像"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                />
+              ) : (
+                <div style={{ marginTop: 8, fontSize: 22, color: '#999' }}>
+                  <UploadOutlined />
+                  <div style={{ marginTop: 4, fontSize: 12 }}>上传头像</div>
+                </div>
+              )}
+            </Upload>
           </Form.Item>
           <Form.Item name="position" label="位置/身份">
             <Input placeholder="如：队长、队员、中单等" />
