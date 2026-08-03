@@ -331,8 +331,9 @@ const PlayerInfoPage: React.FC = () => {
           >
             <Input placeholder="请输入选手姓名" />
           </Form.Item>
-          <Form.Item label="选手头像">
-            <Upload
+          <Form.Item label="选手头像" name="avatar">
+            <div>
+              <Upload
               name="file"
               action="/api/upload/image"
               listType="picture-card"
@@ -378,6 +379,7 @@ const PlayerInfoPage: React.FC = () => {
                 </div>
               )}
             </Upload>
+            </div>
           </Form.Item>
           <Form.Item name="position" label="位置/身份">
             <Input placeholder="如：队长、队员、中单等" />
