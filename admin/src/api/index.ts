@@ -15,6 +15,8 @@ import type {
 // ========== 赛季 ==========
 export const getSeasons = () => request.get<any, Season[]>('/seasons')
 export const getSeason = (id: number) => request.get<any, Season>(`/seasons/${id}`)
+export const getDefaultSeason = () => request.get<any, Season>('/seasons/default')
+export const setDefaultSeason = (id: number) => request.post<any, Season>(`/seasons/${id}/set-default`)
 export const createSeason = (data: Partial<Season>) => request.post<any, Season>('/seasons', data)
 export const updateSeason = (id: number, data: Partial<Season>) =>
   request.put<any, Season>(`/seasons/${id}`, data)

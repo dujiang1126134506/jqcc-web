@@ -27,6 +27,29 @@ public class SeasonController {
         return Result.ok(seasonRepository.findAll());
     }
 
+    @Operation(summary = "获取默认/当前赛季")
+    @GetMapping("/default")
+    public Result<Season> getDefault() {
+        return Result.ok(seasonRepository.findByCurrentSeasonTrue().orElse(null));
+    }
+
+    @Operation(summary = "设为默认/当前赛季")
+    @PostMapping("/{id}/set-default")
+    public Result<Season> setDefault(@PathVariable Long id) {
+        // 先把所有赛季的 currentSeason 设为 false
+        List<Season> all = seasonRepository.findAll();
+        for (Season s : all) {
+            if (Boolean.TRUE.equals(s.getCurrentSeason())) {
+                s.setCurrentSeason(false);
+            }
+        }
+        seasonRepository.saveAll(all);
+        // 再设当前
+        Season season = seasonRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("赛季不存在"));
+        season.setCurrentSeason(true);
+        return Result.ok(seasonRepository.save(season));
+    }
+
     @Operation(summary = "根据ID查询赛季")
     @GetMapping("/{id}")
     public Result<Season> getById(@PathVariable Long id) {

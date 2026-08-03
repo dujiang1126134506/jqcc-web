@@ -20,7 +20,7 @@ import {
   TeamOutlined,
 } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
-import { getTeams, createTeam, updateTeam, deleteTeam, uploadImage, getSeasons } from '@/api'
+import { getTeams, createTeam, updateTeam, deleteTeam, uploadImage, getSeasons, getDefaultSeason } from '@/api'
 import type { Team, Season } from '@/types'
 
 const TeamPage: React.FC = () => {
@@ -35,7 +35,16 @@ const TeamPage: React.FC = () => {
   const fetchSeasons = async () => {
     try {
       const data = await getSeasons()
-      setSeasons(Array.isArray(data) ? data : [])
+      const seasonList = Array.isArray(data) ? data : []
+      setSeasons(seasonList)
+
+      // 加载默认赛季
+      const defaultSeason = await getDefaultSeason()
+      if (defaultSeason && defaultSeason.id) {
+        setFilterSeasonId(defaultSeason.id)
+      } else if (seasonList.length > 0) {
+        setFilterSeasonId(seasonList[0].id)
+      }
     } catch {
       // ignore
     }

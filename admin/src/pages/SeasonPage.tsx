@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Input, DatePicker, Switch, Table, Modal, message, Popconfirm } from 'antd'
+import { Button, Form, Input, DatePicker, Switch, Table, Modal, message, Popconfirm, Tag } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import type { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
-import { getSeasons, createSeason, updateSeason, deleteSeason } from '@/api'
+import { getSeasons, setDefaultSeason, createSeason, updateSeason, deleteSeason } from '@/api'
 import type { Season } from '@/types'
 
 const SeasonPage: React.FC = () => {
@@ -84,6 +84,17 @@ const SeasonPage: React.FC = () => {
     }
   }
 
+  const handleSetDefault = async (row: Season) => {
+    if (row.currentSeason) return
+    try {
+      await setDefaultSeason(row.id)
+      message.success('已设为默认赛季')
+      fetchList()
+    } catch {
+      // ignore
+    }
+  }
+
   const columns: ColumnsType<Season> = [
     { title: 'ID', dataIndex: 'id', width: 80 },
     { title: '赛季名称', dataIndex: 'name', width: 200 },
@@ -101,8 +112,15 @@ const SeasonPage: React.FC = () => {
     {
       title: '当前赛季',
       dataIndex: 'currentSeason',
-      width: 100,
-      render: (v: boolean) => (v ? '是' : '否'),
+      width: 120,
+      render: (v: boolean, row) =>
+        v ? (
+          <Tag color="green">默认赛季</Tag>
+        ) : (
+          <Button type="link" size="small" onClick={() => handleSetDefault(row)}>
+            设为默认
+          </Button>
+        ),
     },
     {
       title: '操作',
