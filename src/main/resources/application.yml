@@ -37,9 +37,11 @@ spring:
     time-zone: GMT+8
 
 # 图片上传配置
+# 生产环境（Linux）：/www/uploads（配合 Nginx alias /www/uploads/）
+# 开发环境（Windows）：设置环境变量 UPLOAD_PATH=D:/jqcc-uploads
 app:
   upload:
-    path: ${UPLOAD_PATH:D:/jqcc-uploads}
+    path: ${UPLOAD_PATH:/www/uploads}
     url-prefix: /uploads
 
 # OpenAPI / Swagger 文档
