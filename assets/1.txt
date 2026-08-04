@@ -1,0 +1,60 @@
+[root@VM-0-7-opencloudos ~]# tail -n 30 /www/wwwlogs/nginx_error.log
+2026/08/04 09:57:10 [emerg] 194159#0: bind() to 127.0.0.1:8700 failed (98: Address already in use)
+2026/08/04 09:57:10 [emerg] 194159#0: bind() to 127.0.0.1:8700 failed (98: Address already in use)
+2026/08/04 09:57:10 [emerg] 194159#0: bind() to 127.0.0.1:8700 failed (98: Address already in use)
+2026/08/04 09:57:10 [emerg] 194159#0: bind() to 127.0.0.1:8700 failed (98: Address already in use)
+2026/08/04 09:57:10 [emerg] 194159#0: bind() to 127.0.0.1:8700 failed (98: Address already in use)
+2026/08/04 09:57:10 [emerg] 194159#0: still could not bind()
+[root@VM-0-7-opencloudos ~]# tail -n 30 /www/server/nginx/logs/jqcc.error.log
+2026/08/03 16:38:18 [error] 77144#0: *3563 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/"
+2026/08/03 16:38:19 [error] 77144#0: *3563 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "www.jqcc.cloud"
+2026/08/03 16:38:19 [error] 77144#0: *3563 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/"
+2026/08/03 16:38:20 [error] 77144#0: *3563 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "www.jqcc.cloud"
+2026/08/03 16:38:20 [error] 77144#0: *3563 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/"
+2026/08/03 16:38:24 [error] 77144#0: *3563 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/static/index.html"
+2026/08/03 16:38:25 [error] 77144#0: *3563 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/static/index.html"
+2026/08/03 16:38:27 [error] 77144#0: *3563 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/static/index.html"
+2026/08/03 16:39:27 [error] 77144#0: *3638 connect() failed (111: Connection refused) while connecting to upstream, client: 34.40.249.166, server: jqcc.cloud, request: "OPTIONS / HTTP/1.0", upstream: "http://127.0.0.1:5000/", host: "124.221.197.217"
+2026/08/03 16:40:38 [error] 77144#0: *3679 connect() failed (111: Connection refused) while connecting to upstream, client: 45.79.181.104, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "124.221.197.217"
+2026/08/03 16:41:29 [error] 77144#0: *3682 connect() failed (111: Connection refused) while connecting to upstream, client: 59.82.83.190, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "jqcc.cloud"
+2026/08/03 16:47:03 [error] 77144#0: *3686 connect() failed (111: Connection refused) while connecting to upstream, client: 172.105.128.13, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "124.221.197.217", referrer: "http://124.221.197.217/"
+2026/08/03 16:54:08 [error] 77144#0: *3689 connect() failed (111: Connection refused) while connecting to upstream, client: 20.168.0.218, server: jqcc.cloud, request: "GET /ecp/Current/exporttool/microsoft.exchange.ediscovery.exporttool.application HTTP/1.1", upstream: "http://127.0.0.1:5000/ecp/Current/exporttool/microsoft.exchange.ediscovery.exporttool.application", host: "124.221.197.217"
+2026/08/03 16:54:34 [error] 77144#0: *3692 connect() failed (111: Connection refused) while connecting to upstream, client: 43.159.62.129, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "124.221.197.217", referrer: "http://124.221.197.217:80"
+2026/08/03 17:15:59 [error] 77144#0: *3703 connect() failed (111: Connection refused) while connecting to upstream, client: 58.216.34.16, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "124.221.197.217", referrer: "http://124.221.197.217:80"
+2026/08/03 17:16:01 [error] 77144#0: *3706 connect() failed (111: Connection refused) while connecting to upstream, client: 123.160.223.74, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "124.221.197.217", referrer: "http://124.221.197.217"
+2026/08/03 17:26:56 [error] 77144#0: *3710 connect() failed (111: Connection refused) while connecting to upstream, client: 82.156.116.86, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "jqcc.cloud", referrer: "http://jqcc.cloud"
+2026/08/03 17:36:42 [error] 77144#0: *3715 connect() failed (111: Connection refused) while connecting to upstream, client: 71.6.232.22, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "124.221.197.217"
+2026/08/03 17:38:01 [error] 77144#0: *3717 connect() failed (111: Connection refused) while connecting to upstream, client: 66.175.213.4, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "124.221.197.217"
+2026/08/03 17:40:07 [error] 77144#0: *3720 connect() failed (111: Connection refused) while connecting to upstream, client: 66.228.40.100, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "124.221.197.217", referrer: "http://124.221.197.217/"
+2026/08/03 18:18:05 [error] 190477#0: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "www.jqcc.cloud"
+2026/08/03 18:18:05 [error] 190477#0: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/"
+2026/08/03 18:18:06 [error] 190477#0: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "www.jqcc.cloud"
+2026/08/03 18:18:06 [error] 190477#0: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/"
+2026/08/03 18:18:07 [error] 190477#0: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "www.jqcc.cloud"
+2026/08/03 18:18:07 [error] 190477#0: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/"
+2026/08/03 18:18:09 [error] 190477#0: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "www.jqcc.cloud"
+2026/08/03 18:18:09 [error] 190477#0: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/"
+2026/08/03 18:22:21 [error] 190477#0: *62 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:5000/", host: "www.jqcc.cloud"
+2026/08/03 18:22:21 [error] 190477#0: *62 connect() failed (111: Connection refused) while connecting to upstream, client: 119.136.205.69, server: jqcc.cloud, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:5000/favicon.ico", host: "www.jqcc.cloud", referrer: "https://www.jqcc.cloud/"
+[root@VM-0-7-opencloudos ~]# echo "test" > /tmp/test.jpg
+curl -v -X POST -F "file=@/tmp/test.jpg" http://127.0.0.1:8800/api/upload/image
+Note: Unnecessary use of -X or --request, POST is already inferred.
+*   Trying 127.0.0.1:8800...
+* Connected to 127.0.0.1 (127.0.0.1) port 8800
+> POST /api/upload/image HTTP/1.1
+> Host: 127.0.0.1:8800
+> User-Agent: curl/8.4.0
+> Accept: */*
+> Content-Length: 203
+> Content-Type: multipart/form-data; boundary=------------------------PXVt1eFXtGLnzewBcMjtsf
+> 
+* We are completely uploaded and fine
+< HTTP/1.1 200 
+< Vary: Origin
+< Vary: Access-Control-Request-Method
+< Vary: Access-Control-Request-Headers
+< Content-Type: application/json
+< Transfer-Encoding: chunked
+< Date: Tue, 04 Aug 2026 02:35:51 GMT
+< 
+* Connection #0 to host 127.0.0.1 left intact
