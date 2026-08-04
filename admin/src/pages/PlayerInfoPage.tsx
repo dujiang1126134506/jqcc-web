@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Table, Button, Modal, Form, Input, Select, Image, Space, Popconfirm, message, Upload } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined } from '@ant-design/icons'
 import type { Team, Season } from '@/types'
-import { getTeams, getSeasons } from '@/api'
+import { getTeams, getSeasons, uploadImage } from '@/api'
 import getImageUrl from '@/utils/imageUrl'
 
 interface PlayerInfo {
@@ -122,6 +122,19 @@ const PlayerInfoPage: React.FC = () => {
     } catch {
       message.error('删除失败')
     }
+  }
+
+  const handleAvatarUpload = async (file: File) => {
+    try {
+      const res = await uploadImage(file)
+      const url = typeof res === 'string' ? res : res.url
+      setFormAvatarUrl(url)
+      form.setFieldsValue({ avatar: url })
+      message.success('头像上传成功')
+    } catch {
+      message.error('头像上传失败')
+    }
+    return false // 阻止自动上传
   }
 
   const handleSubmit = async () => {
@@ -334,39 +347,13 @@ const PlayerInfoPage: React.FC = () => {
           <Form.Item label="选手头像" name="avatar">
             <div>
               <Upload
-              name="file"
-              action="/api/upload/image"
-              listType="picture-card"
-              maxCount={1}
-              showUploadList={false}
-              accept="image/*"
-              beforeUpload={(file) => {
-                const isImage = file.type.startsWith('image/')
-                if (!isImage) {
-                  message.error('只能上传图片文件!')
-                  return Upload.LIST_IGNORE
-                }
-                const isLt2M = file.size / 1024 / 1024 < 2
-                if (!isLt2M) {
-                  message.error('图片大小不能超过 2MB!')
-                  return Upload.LIST_IGNORE
-                }
-                return true
-              }}
-              onChange={(info) => {
-                if (info.file.status === 'done') {
-                  const url = info.file.response?.data?.url || info.file.response?.url
-                  if (url) {
-                    setFormAvatarUrl(url)
-                    form.setFieldsValue({ avatar: url })
-                    message.success('头像上传成功')
-                  }
-                } else if (info.file.status === 'error') {
-                  message.error('头像上传失败')
-                }
-              }}
-            >
-              {formAvatarUrl ? (
+                beforeUpload={handleAvatarUpload}
+                listType="picture-card"
+                maxCount={1}
+                showUploadList={false}
+                accept="image/*"
+              >
+                {formAvatarUrl ? (
                 <img
                   src={getImageUrl(formAvatarUrl)}
                   alt="头像"
