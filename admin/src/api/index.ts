@@ -47,6 +47,9 @@ export const updatePlayer = (id: number, data: PlayerRecordDTO) =>
 
 export const deletePlayer = (id: number) => request.delete<any, void>(`/players/${id}`)
 
+export const importPlayers = (data: PlayerRecordDTO[]) =>
+  request.post<any, ImportResultVO>('/players/import', data)
+
 // ========== 排行榜 / 赛程（/api/app）==========
 export const getAppSeasons = () => request.get<any, SeasonInfo[]>('/app/seasons')
 export const getCurrentSeasonId = () => request.get<any, number>('/app/current-season')

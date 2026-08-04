@@ -11,6 +11,7 @@ const PlayerInfoPage = lazy(() => import('./pages/PlayerInfoPage'))
 const PlayerPage = lazy(() => import('./pages/PlayerPage'))
 const ScorePage = lazy(() => import('./pages/ScorePage'))
 const ImportPage = lazy(() => import('./pages/ImportPage'))
+const BattleReportPage = lazy(() => import('./pages/BattleReportPage'))
 
 const Loading = () => (
   <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}>
@@ -33,6 +34,7 @@ const App: React.FC = () => {
               <Route path="player-scores" element={<PlayerPage />} />
               <Route path="score-records" element={<ScorePage />} />
               <Route path="import" element={<ImportPage />} />
+              <Route path="battle-report" element={<BattleReportPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Route>
           </Routes>

@@ -8,6 +8,7 @@ import {
   FileTextOutlined,
   TableOutlined,
   UploadOutlined,
+  PictureOutlined,
 } from '@ant-design/icons'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 
@@ -21,6 +22,7 @@ const menuItems = [
   { key: '/player-scores', icon: <FileTextOutlined />, label: '选手得分' },
   { key: '/score-records', icon: <TableOutlined />, label: '得分记录' },
   { key: '/import', icon: <UploadOutlined />, label: '数据导入' },
+  { key: '/battle-report', icon: <PictureOutlined />, label: '战报导入' },
 ]
 
 const AdminLayout: React.FC = () => {

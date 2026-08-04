@@ -72,6 +72,7 @@ export interface PlayerRecordDTO {
   date: string
   identity?: string
   role?: string
+  version?: string
   voteScore: number
   winScore: number
   skillScore: number
